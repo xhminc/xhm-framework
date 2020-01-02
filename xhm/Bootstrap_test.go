@@ -1,13 +1,11 @@
 package xhm
 
 import (
-	"github.com/xhminc/xhm-framework/component/config"
+	"github.com/xhminc/xhm-framework/config"
 	"testing"
 )
 
 func TestBootstrap(t *testing.T) {
-
-	var GlobalConfig config.YAMLConfig
-
-	Bootstrap(&GlobalConfig)
+	var CommonConfig config.YAMLConfig
+	Bootstrap(&CommonConfig)
 }

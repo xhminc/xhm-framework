@@ -4,7 +4,7 @@ import (
 	"flag"
 	"github.com/sirupsen/logrus"
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
-	"github.com/xhminc/xhm-framework/component/config"
+	"github.com/xhminc/xhm-framework/config"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
@@ -36,7 +36,7 @@ func loadConfigFile(c *config.YAMLConfig) {
 
 func loadYAMLConfig(filename string, c *config.YAMLConfig) {
 
-	realPath, pathErr := filepath.Abs("../resource/" + filename)
+	realPath, pathErr := filepath.Abs("resource/" + filename)
 
 	if pathErr != nil {
 		log.Fatal("Generate Absolute Path error")

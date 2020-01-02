@@ -35,7 +35,7 @@ func LogToFile() gin.HandlerFunc {
 		log.SetOutput(os.Stdout)
 	}
 
-	log.Info("LoggerToFile component inited")
+	log.Info("\"LoggerToFile\" component init finished")
 
 	return func(c *gin.Context) {
 
