@@ -1,4 +1,4 @@
-module xhm-tradercat-service
+module xhm-framework
 
 go 1.13
 
