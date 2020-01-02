@@ -1,4 +1,4 @@
-module xhm-framework
+module github.com/xhminc/xhm-framework
 
 go 1.13
 
