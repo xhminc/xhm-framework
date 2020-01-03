@@ -16,6 +16,10 @@ var (
 	timestampFormat = "2006-01-02 15:04:05.000"
 )
 
+func GetLogger() *zap.Logger {
+	return InitLogger(nil)
+}
+
 func InitLogger(c *config.YAMLConfig) *zap.Logger {
 
 	if log != nil {

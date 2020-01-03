@@ -13,13 +13,21 @@ import (
 
 var (
 	log          *zap.Logger
-	GlobalConfig config.YAMLConfig
+	globalConfig *config.YAMLConfig
 )
 
 func Bootstrap() {
 	bootstrap()
 	//initDataSource()
 	log.Info("Bootstrap init finished !!!")
+}
+
+func GetGlobalConfig() *config.YAMLConfig {
+	if globalConfig != nil {
+		return globalConfig
+	}
+	globalConfig = &config.YAMLConfig{}
+	return globalConfig
 }
 
 func bootstrap() {
@@ -36,9 +44,9 @@ func bootstrap() {
 
 	loadYAMLConfig("application.yml")
 	loadYAMLConfig("application-" + applicationProfile + ".yml")
-	GlobalConfig.Application.Profile = applicationProfile
+	globalConfig.Application.Profile = applicationProfile
 
-	log = logger.InitLogger(&GlobalConfig)
+	log = logger.InitLogger(globalConfig)
 	log.Info("Load YAML configure finished, profiles: [application.yml, application-" + applicationProfile + ".yml]")
 }
 
@@ -56,7 +64,7 @@ func loadYAMLConfig(filename string) {
 		panic(fmt.Errorf("loading config file fail, exception: %s", ioErr))
 	}
 
-	e := yaml.Unmarshal(content, &GlobalConfig)
+	e := yaml.Unmarshal(content, globalConfig)
 
 	if e != nil {
 		panic(fmt.Errorf("parsing yaml config fail, exception: %s", e))
