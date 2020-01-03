@@ -10,6 +10,11 @@ type YAMLConfig struct {
 		Profile string
 	}
 
+	Logging struct {
+		FileName string `yaml:"filename"`
+		FilePath string `yaml:"filepath"`
+	}
+
 	Website struct {
 		Host  string `yaml:"host"`
 		Title string `yaml:"title"`
