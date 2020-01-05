@@ -1,2 +1,7 @@
-server:
-  port: 40000
+website:
+  host: http://www.abc.com
+  title: 测试标题
+
+logging:
+  filename: asdf
+  filepath: .

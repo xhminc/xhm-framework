@@ -26,16 +26,9 @@ func InitLogger(c *config.YAMLConfig) *zap.Logger {
 		return log
 	}
 
-	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-		MessageKey:     "msg",
-		LevelKey:       "level",
-		EncodeLevel:    zapcore.CapitalLevelEncoder,
-		TimeKey:        "ts",
-		EncodeTime:     func(t time.Time, enc zapcore.PrimitiveArrayEncoder) { enc.AppendString(t.Format(timestampFormat)) },
-		CallerKey:      "file",
-		EncodeCaller:   zapcore.FullCallerEncoder,
-		EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) { enc.AppendInt64(int64(d) / 1000000) },
-	})
+	encoderConfig := newEncoderConfig()
+	cfg := newLoggerConfig(c, encoderConfig)
+	encoder := zapcore.NewConsoleEncoder(encoderConfig)
 
 	debugLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
 		return level >= zapcore.DebugLevel
@@ -66,8 +59,60 @@ func InitLogger(c *config.YAMLConfig) *zap.Logger {
 		zapcore.NewCore(encoder, zapcore.AddSync(warnHook), warnLevel),
 	)
 
-	log = zap.New(core, zap.AddCaller())
+	log, _ = cfg.Build(zap.WrapCore(func(c zapcore.Core) zapcore.Core {
+		return core
+	}))
+
 	return log
+}
+
+func newEncoderConfig() zapcore.EncoderConfig {
+	return zapcore.EncoderConfig{
+		TimeKey:       "ts",
+		LevelKey:      "level",
+		NameKey:       "logger",
+		CallerKey:     "caller",
+		MessageKey:    "msg",
+		StacktraceKey: "stacktrace",
+		LineEnding:    zapcore.DefaultLineEnding,
+		EncodeLevel:   zapcore.CapitalLevelEncoder,
+		EncodeCaller:  zapcore.FullCallerEncoder,
+		EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+			enc.AppendString(t.Format(timestampFormat))
+		},
+		EncodeDuration: zapcore.StringDurationEncoder,
+		//EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
+		//	enc.AppendInt64(int64(d) / 1000000)
+		//},
+	}
+}
+
+func newLoggerConfig(c *config.YAMLConfig, encoderConfig zapcore.EncoderConfig) zap.Config {
+
+	var level zap.AtomicLevel
+	var development bool
+	var disableCaller bool
+
+	if c.Application.Profile == "dev" || c.Application.Profile == "test" {
+		level = zap.NewAtomicLevelAt(zap.DebugLevel)
+		development = true
+		disableCaller = false
+	} else {
+		level = zap.NewAtomicLevelAt(zap.InfoLevel)
+		development = false
+		disableCaller = true
+	}
+
+	cfg := zap.Config{
+		Level:             level,
+		Development:       development,
+		DisableCaller:     disableCaller,
+		DisableStacktrace: false,
+		Encoding:          "console",
+		EncoderConfig:     encoderConfig,
+	}
+
+	return cfg
 }
 
 func getHook(filename string) io.Writer {
