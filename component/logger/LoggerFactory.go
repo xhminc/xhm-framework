@@ -34,35 +34,39 @@ func InitLogger(c *config.YAMLConfig) *zap.Logger {
 		return level >= zapcore.DebugLevel
 	})
 
-	infoLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
-		return level < zapcore.WarnLevel
-	})
+	//infoLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
+	//	return level < zapcore.WarnLevel
+	//})
+	//
+	//warnLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
+	//	return level >= zapcore.WarnLevel
+	//})
 
-	warnLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
-		return level >= zapcore.WarnLevel
-	})
-
-	var infoHook io.Writer
-	var warnHook io.Writer
-
-	if strings.HasSuffix(c.Logging.FilePath, "/") {
-		infoHook = getHook(c.Logging.FilePath + c.Logging.FileName)
-		warnHook = getHook(c.Logging.FilePath + errorFilename(c.Logging.FileName))
-	} else {
-		infoHook = getHook(c.Logging.FilePath + "/" + c.Logging.FileName)
-		warnHook = getHook(c.Logging.FilePath + "/" + errorFilename(c.Logging.FileName))
-	}
+	//var infoHook io.Writer
+	//var warnHook io.Writer
+	//
+	//if strings.HasSuffix(c.Logging.FilePath, "/") {
+	//	infoHook = getHook(c.Logging.FilePath + c.Logging.FileName)
+	//	warnHook = getHook(c.Logging.FilePath + errorFilename(c.Logging.FileName))
+	//} else {
+	//	infoHook = getHook(c.Logging.FilePath + "/" + c.Logging.FileName)
+	//	warnHook = getHook(c.Logging.FilePath + "/" + errorFilename(c.Logging.FileName))
+	//}
 
 	core := zapcore.NewTee(
 		zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), debugLevel),
-		zapcore.NewCore(encoder, zapcore.AddSync(infoHook), infoLevel),
-		zapcore.NewCore(encoder, zapcore.AddSync(warnHook), warnLevel),
+		//zapcore.NewCore(encoder, zapcore.AddSync(infoHook), infoLevel),
+		//zapcore.NewCore(encoder, zapcore.AddSync(warnHook), warnLevel),
 	)
 
 	log, _ = cfg.Build(zap.WrapCore(func(c zapcore.Core) zapcore.Core {
 		return core
 	}))
 
+	//log, _ = cfg.Build()
+
+	log.Info("init logger", zap.String("name", "logger"), zap.String("qq", "123456789"))
+	log.Error("kldsajflkasjd")
 	return log
 }
 
@@ -110,6 +114,10 @@ func newLoggerConfig(c *config.YAMLConfig, encoderConfig zapcore.EncoderConfig) 
 		DisableStacktrace: false,
 		Encoding:          "console",
 		EncoderConfig:     encoderConfig,
+		OutputPaths:       []string{"stdout"},
+		InitialFields: map[string]interface{}{
+			"serviceName": c.Application.Name,
+		},
 	}
 
 	return cfg
