@@ -7,7 +7,7 @@ import (
 
 func RequestLogger() gin.HandlerFunc {
 
-	log.Info("Loading \"RequestLogger\" component success")
+	log.Info("Loading \"logger.RequestLogger\" component success")
 
 	return func(c *gin.Context) {
 

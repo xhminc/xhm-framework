@@ -48,7 +48,7 @@ func bootstrap() {
 	globalConfig.Application.Profile = applicationProfile
 
 	log = logger.InitLogger(globalConfig)
-	log.Info("Loading YAML configure finished, profiles: [application.yml, application-" + applicationProfile + ".yml]")
+	log.Info("Loading yaml configure finished, profiles: [application.yml, application-" + applicationProfile + ".yml]")
 }
 
 func loadYAMLConfig(filename string) {

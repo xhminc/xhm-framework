@@ -1,12 +1,12 @@
 package logger
 
 import (
+	"fmt"
 	"github.com/lestrrat-go/file-rotatelogs"
 	"github.com/xhminc/xhm-framework/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
-	"os"
 	"strings"
 	"time"
 )
@@ -28,45 +28,47 @@ func InitLogger(c *config.YAMLConfig) *zap.Logger {
 
 	encoderConfig := newEncoderConfig()
 	cfg := newLoggerConfig(c, encoderConfig)
-	encoder := zapcore.NewConsoleEncoder(encoderConfig)
 
-	debugLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
-		return level >= zapcore.DebugLevel
+	var encoder zapcore.Encoder
+	if c.Logging.Encoding == "console" {
+		encoder = zapcore.NewConsoleEncoder(encoderConfig)
+	} else if c.Logging.Encoding == "json" {
+		encoder = zapcore.NewJSONEncoder(encoderConfig)
+	} else {
+		panic(fmt.Errorf("logging.encoding incorrect, usage: console | json"))
+	}
+
+	infoLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
+		return level < zapcore.WarnLevel
 	})
 
-	//infoLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
-	//	return level < zapcore.WarnLevel
-	//})
-	//
-	//warnLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
-	//	return level >= zapcore.WarnLevel
-	//})
+	warnLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
+		return level >= zapcore.WarnLevel
+	})
 
-	//var infoHook io.Writer
-	//var warnHook io.Writer
-	//
-	//if strings.HasSuffix(c.Logging.FilePath, "/") {
-	//	infoHook = getHook(c.Logging.FilePath + c.Logging.FileName)
-	//	warnHook = getHook(c.Logging.FilePath + errorFilename(c.Logging.FileName))
-	//} else {
-	//	infoHook = getHook(c.Logging.FilePath + "/" + c.Logging.FileName)
-	//	warnHook = getHook(c.Logging.FilePath + "/" + errorFilename(c.Logging.FileName))
-	//}
+	var infoHook io.Writer
+	var warnHook io.Writer
 
-	core := zapcore.NewTee(
-		zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), debugLevel),
-		//zapcore.NewCore(encoder, zapcore.AddSync(infoHook), infoLevel),
-		//zapcore.NewCore(encoder, zapcore.AddSync(warnHook), warnLevel),
-	)
+	if strings.HasSuffix(c.Logging.FilePath, "/") {
+		infoHook = getHook(c.Logging.FilePath + c.Logging.FileName)
+		warnHook = getHook(c.Logging.FilePath + errorFilename(c.Logging.FileName))
+	} else {
+		infoHook = getHook(c.Logging.FilePath + "/" + c.Logging.FileName)
+		warnHook = getHook(c.Logging.FilePath + "/" + errorFilename(c.Logging.FileName))
+	}
 
-	log, _ = cfg.Build(zap.WrapCore(func(c zapcore.Core) zapcore.Core {
-		return core
+	log, _ = cfg.Build(zap.WrapCore(func(oc zapcore.Core) zapcore.Core {
+		return zapcore.NewTee(
+			oc,
+			zapcore.NewCore(encoder, zapcore.AddSync(infoHook), infoLevel).With([]zap.Field{
+				zap.String("serviceName", c.Application.Name),
+			}),
+			zapcore.NewCore(encoder, zapcore.AddSync(warnHook), warnLevel).With([]zap.Field{
+				zap.String("serviceName", c.Application.Name),
+			}),
+		)
 	}))
 
-	//log, _ = cfg.Build()
-
-	log.Info("init logger", zap.String("name", "logger"), zap.String("qq", "123456789"))
-	log.Error("kldsajflkasjd")
 	return log
 }
 
@@ -85,9 +87,6 @@ func newEncoderConfig() zapcore.EncoderConfig {
 			enc.AppendString(t.Format(timestampFormat))
 		},
 		EncodeDuration: zapcore.StringDurationEncoder,
-		//EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
-		//	enc.AppendInt64(int64(d) / 1000000)
-		//},
 	}
 }
 
@@ -112,7 +111,7 @@ func newLoggerConfig(c *config.YAMLConfig, encoderConfig zapcore.EncoderConfig) 
 		Development:       development,
 		DisableCaller:     disableCaller,
 		DisableStacktrace: false,
-		Encoding:          "console",
+		Encoding:          c.Logging.Encoding,
 		EncoderConfig:     encoderConfig,
 		OutputPaths:       []string{"stdout"},
 		InitialFields: map[string]interface{}{

@@ -11,6 +11,7 @@ type YAMLConfig struct {
 	}
 
 	Logging struct {
+		Encoding string `yaml:"encoding"`
 		FileName string `yaml:"filename"`
 		FilePath string `yaml:"filepath"`
 	}
