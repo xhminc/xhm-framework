@@ -1,6 +1,7 @@
 package xhm
 
 import (
+	"flag"
 	"fmt"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
@@ -13,14 +14,14 @@ import (
 var (
 	log                *zap.Logger
 	globalConfig       *config.YAMLConfig
-	applicationProfile = "prod"
+	applicationProfile string
 )
 
 func Bootstrap() {
 	GetGlobalConfig()
 	bootstrap()
 	//initDataSource()
-	log.Info("Bootstrap init finished !!!")
+	log.Info("Bootstrap framework finished !!!")
 }
 
 func GetGlobalConfig() *config.YAMLConfig {
@@ -33,21 +34,21 @@ func GetGlobalConfig() *config.YAMLConfig {
 
 func bootstrap() {
 
-	//flag.StringVar(&applicationProfile, "profile", "dev",
-	//	"Please enter application profile name for loading configure.")
-	//flag.Parse()
-	//
-	//if applicationProfile != "dev" && applicationProfile != "test" &&
-	//	applicationProfile != "prev" && applicationProfile != "prod" {
-	//	panic(fmt.Errorf("profile incorrect, usage: dev | test | prev | prod"))
-	//}
+	flag.StringVar(&applicationProfile, "profile", "dev",
+		"Please enter application profile name for loading configure.")
+	flag.Parse()
+
+	if applicationProfile != "dev" && applicationProfile != "test" &&
+		applicationProfile != "prev" && applicationProfile != "prod" {
+		panic(fmt.Errorf("profile incorrect, usage: dev | test | prev | prod"))
+	}
 
 	loadYAMLConfig("application.yml")
 	loadYAMLConfig("application-" + applicationProfile + ".yml")
 	globalConfig.Application.Profile = applicationProfile
 
 	log = logger.InitLogger(globalConfig)
-	log.Info("Load YAML configure finished, profiles: [application.yml, application-" + applicationProfile + ".yml]")
+	log.Info("Loading YAML configure finished, profiles: [application.yml, application-" + applicationProfile + ".yml]")
 }
 
 func loadYAMLConfig(filename string) {
