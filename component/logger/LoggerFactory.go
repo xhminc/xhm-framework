@@ -7,6 +7,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
+	"os"
 	"strings"
 	"time"
 )
@@ -48,13 +49,21 @@ func InitLogger(c *config.YAMLConfig) *zap.Logger {
 
 	var infoHook io.Writer
 	var warnHook io.Writer
+	var path string
 
 	if strings.HasSuffix(c.Logging.FilePath, "/") {
-		infoHook = getHook(c.Logging.FilePath + c.Logging.FileName)
-		warnHook = getHook(c.Logging.FilePath + errorFilename(c.Logging.FileName))
+		path = c.Logging.FilePath + c.Application.Name + "/"
+		infoHook = getHook(path + c.Logging.FileName)
+		warnHook = getHook(c.Logging.FilePath + c.Application.Name + "/" + errorFilename(c.Logging.FileName))
 	} else {
-		infoHook = getHook(c.Logging.FilePath + "/" + c.Logging.FileName)
-		warnHook = getHook(c.Logging.FilePath + "/" + errorFilename(c.Logging.FileName))
+		path = c.Logging.FilePath + "/" + c.Application.Name + "/"
+		infoHook = getHook(path + c.Logging.FileName)
+		warnHook = getHook(c.Logging.FilePath + "/" + c.Application.Name + "/" + errorFilename(c.Logging.FileName))
+	}
+
+	pathErr := os.MkdirAll(path, os.ModePerm)
+	if pathErr != nil {
+		panic(fmt.Errorf("create log folder fail, exception: %s", pathErr))
 	}
 
 	log, _ = cfg.Build(zap.WrapCore(func(oc zapcore.Core) zapcore.Core {

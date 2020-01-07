@@ -2,6 +2,7 @@ package logger
 
 import (
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -35,10 +36,11 @@ func RequestLogger() gin.HandlerFunc {
 		// 请求IP
 		clientIP := c.ClientIP()
 
-		log.Info(string(latencyTime))
-		log.Info(reqMethod)
-		log.Info(reqUri)
-		log.Info(string(statusCode))
-		log.Info(clientIP)
+		log.Info(
+			reqMethod+" "+reqUri,
+			zap.Int("status", statusCode),
+			zap.Duration("cost", latencyTime),
+			zap.String("ip", clientIP),
+		)
 	}
 }

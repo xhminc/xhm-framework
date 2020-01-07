@@ -6,6 +6,11 @@ import (
 	"github.com/xhminc/xhm-framework/component/test"
 	"github.com/xhminc/xhm-framework/xhm"
 	"testing"
+	"time"
+)
+
+var (
+	timestampFormat = "20060102150405000"
 )
 
 func TestLogToFile(t *testing.T) {
@@ -18,5 +23,6 @@ func TestLogToFile(t *testing.T) {
 	r.GET("/", func(c *gin.Context) {
 	})
 
-	test.PerformRequest(r, "GET", "/")
+	ts := time.Now().Format(timestampFormat)
+	test.PerformRequest(r, "GET", "/?t="+ts)
 }
