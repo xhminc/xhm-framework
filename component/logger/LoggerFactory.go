@@ -15,6 +15,7 @@ import (
 var (
 	log             *zap.Logger
 	timestampFormat = "2006-01-02 15:04:05.000"
+	globalConfig    *config.YAMLConfig
 )
 
 func GetLogger() *zap.Logger {
@@ -23,17 +24,19 @@ func GetLogger() *zap.Logger {
 
 func InitLogger(c *config.YAMLConfig) *zap.Logger {
 
+	globalConfig = c
+
 	if log != nil {
 		return log
 	}
 
 	encoderConfig := newEncoderConfig()
-	cfg := newLoggerConfig(c, encoderConfig)
+	cfg := newLoggerConfig(encoderConfig)
 
 	var encoder zapcore.Encoder
-	if c.Logging.Encoding == "console" {
+	if globalConfig.Logging.Encoding == "console" {
 		encoder = zapcore.NewConsoleEncoder(encoderConfig)
-	} else if c.Logging.Encoding == "json" {
+	} else if globalConfig.Logging.Encoding == "json" {
 		encoder = zapcore.NewJSONEncoder(encoderConfig)
 	} else {
 		panic(fmt.Errorf("logging.encoding incorrect, usage: console | json"))
@@ -51,14 +54,16 @@ func InitLogger(c *config.YAMLConfig) *zap.Logger {
 	var warnHook io.Writer
 	var path string
 
-	if strings.HasSuffix(c.Logging.FilePath, "/") {
-		path = c.Logging.FilePath + c.Application.Name + "/"
-		infoHook = getHook(path + c.Logging.FileName)
-		warnHook = getHook(c.Logging.FilePath + c.Application.Name + "/" + errorFilename(c.Logging.FileName))
+	if strings.HasSuffix(globalConfig.Logging.FilePath, "/") {
+		path = globalConfig.Logging.FilePath + globalConfig.Application.Name + "/"
+		infoHook = getHook(path + globalConfig.Logging.FileName)
+		warnHook = getHook(globalConfig.Logging.FilePath +
+			globalConfig.Application.Name + "/" + errorFilename(globalConfig.Logging.FileName))
 	} else {
-		path = c.Logging.FilePath + "/" + c.Application.Name + "/"
-		infoHook = getHook(path + c.Logging.FileName)
-		warnHook = getHook(c.Logging.FilePath + "/" + c.Application.Name + "/" + errorFilename(c.Logging.FileName))
+		path = globalConfig.Logging.FilePath + "/" + globalConfig.Application.Name + "/"
+		infoHook = getHook(path + globalConfig.Logging.FileName)
+		warnHook = getHook(globalConfig.Logging.FilePath + "/" +
+			globalConfig.Application.Name + "/" + errorFilename(globalConfig.Logging.FileName))
 	}
 
 	pathErr := os.MkdirAll(path, os.ModePerm)
@@ -70,10 +75,10 @@ func InitLogger(c *config.YAMLConfig) *zap.Logger {
 		return zapcore.NewTee(
 			oc,
 			zapcore.NewCore(encoder, zapcore.AddSync(infoHook), infoLevel).With([]zap.Field{
-				zap.String("serviceName", c.Application.Name),
+				zap.String("serviceName", globalConfig.Application.Name),
 			}),
 			zapcore.NewCore(encoder, zapcore.AddSync(warnHook), warnLevel).With([]zap.Field{
-				zap.String("serviceName", c.Application.Name),
+				zap.String("serviceName", globalConfig.Application.Name),
 			}),
 		)
 	}))
@@ -99,13 +104,13 @@ func newEncoderConfig() zapcore.EncoderConfig {
 	}
 }
 
-func newLoggerConfig(c *config.YAMLConfig, encoderConfig zapcore.EncoderConfig) zap.Config {
+func newLoggerConfig(encoderConfig zapcore.EncoderConfig) zap.Config {
 
 	var level zap.AtomicLevel
 	var development bool
 	var disableCaller bool
 
-	if c.Application.Profile == "dev" || c.Application.Profile == "test" {
+	if globalConfig.Application.Profile == "dev" || globalConfig.Application.Profile == "test" {
 		level = zap.NewAtomicLevelAt(zap.DebugLevel)
 		development = true
 		disableCaller = false
@@ -120,11 +125,11 @@ func newLoggerConfig(c *config.YAMLConfig, encoderConfig zapcore.EncoderConfig) 
 		Development:       development,
 		DisableCaller:     disableCaller,
 		DisableStacktrace: false,
-		Encoding:          c.Logging.Encoding,
+		Encoding:          globalConfig.Logging.Encoding,
 		EncoderConfig:     encoderConfig,
 		OutputPaths:       []string{"stdout"},
 		InitialFields: map[string]interface{}{
-			"serviceName": c.Application.Name,
+			"serviceName": globalConfig.Application.Name,
 		},
 	}
 
