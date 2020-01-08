@@ -20,9 +20,9 @@ func TestLogToFile(t *testing.T) {
 	r := gin.New()
 	r.Use(logger.RequestLogger())
 
-	r.GET("/", func(c *gin.Context) {
+	r.GET("/:id", func(c *gin.Context) {
 	})
 
 	ts := time.Now().Format(timestampFormat)
-	test.PerformRequest(r, "GET", "/?t="+ts)
+	test.PerformRequest(r, "GET", "/887910?t="+ts+"&name=service&name=xhm")
 }

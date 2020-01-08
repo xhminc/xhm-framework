@@ -41,6 +41,8 @@ func RequestLogger() gin.HandlerFunc {
 			zap.Int("status", statusCode),
 			zap.Duration("cost", latencyTime),
 			zap.String("ip", clientIP),
+			zap.Any("params", c.Params),
+			zap.Any("query", c.Request.URL.Query()),
 		)
 	}
 }
