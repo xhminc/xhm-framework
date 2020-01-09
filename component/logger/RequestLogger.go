@@ -43,6 +43,7 @@ func RequestLogger() gin.HandlerFunc {
 			zap.String("ip", clientIP),
 			zap.Any("params", c.Params),
 			zap.Any("query", c.Request.URL.Query()),
+			zap.Any("headers", c.Request.Header),
 		)
 	}
 }

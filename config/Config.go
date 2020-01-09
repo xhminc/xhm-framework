@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 type YAMLConfig struct {
 	Server struct {
 		Port string `yaml:"port"`
@@ -19,5 +21,25 @@ type YAMLConfig struct {
 	Website struct {
 		Host  string `yaml:"host"`
 		Title string `yaml:"title"`
+	}
+
+	DB map[string]struct {
+		DriverName              string        `yaml:"driverName"`
+		Host                    string        `yaml:"host"`
+		Port                    uint16        `yaml:"port"`
+		Username                string        `yaml:"username"`
+		Password                string        `yaml:"password"`
+		DbName                  string        `yaml:"dbname"`
+		Charset                 string        `yaml:"charset"`
+		ParseTime               string        `yaml:"parseTime"`
+		Loc                     string        `yaml:"loc"`
+		Timeout                 string        `yaml:"timeout"`
+		ReadTimeout             string        `yaml:"readTimeout"`
+		WriteTimeout            string        `yaml:"writeTimeout"`
+		RejectReadOnly          string        `yaml:"rejectReadOnly"`
+		CheckConnectionLiveness string        `yaml:"checkConnectionLiveness"`
+		MaxIdleConnections      int           `yaml:"maxIdleConnections"`
+		MaxOpenConnections      int           `yaml:"maxOpenConnections"`
+		ConnectionMaxLifetime   time.Duration `yaml:"connectionMaxLifetime"`
 	}
 }

@@ -3,6 +3,7 @@ package xhm
 import (
 	"flag"
 	"fmt"
+	"github.com/xhminc/xhm-framework/component/database"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
 	"go.uber.org/zap"
@@ -20,7 +21,7 @@ var (
 func Bootstrap() {
 	GetGlobalConfig()
 	bootstrap()
-	//initDataSource()
+	database.InitDataSource(globalConfig)
 	log.Info("Bootstrap framework finished !!!")
 }
 
