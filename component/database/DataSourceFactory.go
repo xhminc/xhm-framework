@@ -19,8 +19,12 @@ func InitDataSource(c *config.YAMLConfig) {
 
 	globalConfig = c
 	log = logger.GetLogger()
-	dbMap = map[string]*gorm.DB{}
 
+	if globalConfig.DB == nil || len(globalConfig.DB) == 0 {
+		panic(fmt.Errorf("data source config not exists"))
+	}
+
+	dbMap = map[string]*gorm.DB{}
 	for k, v := range globalConfig.DB {
 
 		url := fmt.Sprintf("%s:%s@(%s:%d)/%s?"+
