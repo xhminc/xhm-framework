@@ -44,6 +44,8 @@ func InitDataSource(c *config.YAMLConfig) {
 
 			if globalConfig.Application.Profile == "dev" || globalConfig.Application.Profile == "test" {
 				db.LogMode(true)
+			} else {
+				db.LogMode(false)
 			}
 
 			db.DB().SetMaxIdleConns(v.MaxIdleConnections)
