@@ -28,7 +28,7 @@ func InitDataSource(c *config.YAMLConfig) {
 	for k, v := range globalConfig.DB {
 
 		url := fmt.Sprintf("%s:%s@(%s:%d)/%s?"+
-			"charset=%s&parseTime=%s&loc=%s&timeout=%s&readTimeout=%s&writeTimeout=%s&rejectReadOnly=%s&checkConnectionLiveness=%s",
+			"charset=%s&parseTime=%s&loc=%s&timeout=%s&readTimeout=%s&writeTimeout=%s&rejectReadOnly=%s&checkConnLiveness=%s",
 			v.Username,
 			v.Password,
 			v.Host,
