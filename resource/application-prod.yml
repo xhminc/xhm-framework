@@ -22,7 +22,6 @@ db:
     readTimeout: 30s
     writeTimeout: 30s
     rejectReadOnly: false
-    checkConnectionLiveness: true
     maxIdleConnections: 2
     maxOpenConnections: 2
     connectionMaxLifetime: 30s
@@ -31,7 +30,7 @@ db:
     host: localhost
     port: 3306
     username: root
-    password: 987654321
+    password: 123456
     dbname: tradercat
     charset: utf8mb4
     parseTime: true
@@ -40,7 +39,6 @@ db:
     readTimeout: 30s
     writeTimeout: 30s
     rejectReadOnly: false
-    checkConnectionLiveness: true
     maxIdleConnections: 2
     maxOpenConnections: 2
     connectionMaxLifetime: 30s

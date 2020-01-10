@@ -36,7 +36,7 @@ func GetGlobalConfig() *config.YAMLConfig {
 func bootstrap() {
 
 	flag.StringVar(&applicationProfile, "profile", "dev",
-		"Please enter application profile name for loading configure.")
+		"Please enter application profile name for loading config.")
 	flag.Parse()
 
 	if applicationProfile != "dev" && applicationProfile != "test" &&
@@ -49,7 +49,7 @@ func bootstrap() {
 	globalConfig.Application.Profile = applicationProfile
 
 	log = logger.InitLogger(globalConfig)
-	log.Info("Loading yaml configure finished, profiles: [application.yml, application-" + applicationProfile + ".yml]")
+	log.Info("Loading yaml config finished, profiles: [application.yml, application-" + applicationProfile + ".yml]")
 }
 
 func loadYAMLConfig(filename string) {

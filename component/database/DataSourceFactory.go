@@ -28,7 +28,7 @@ func InitDataSource(c *config.YAMLConfig) {
 	for k, v := range globalConfig.DB {
 
 		url := fmt.Sprintf("%s:%s@(%s:%d)/%s?"+
-			"charset=%s&parseTime=%s&loc=%s&timeout=%s&readTimeout=%s&writeTimeout=%s&rejectReadOnly=%s&checkConnLiveness=%s",
+			"charset=%s&parseTime=%s&loc=%s&timeout=%s&readTimeout=%s&writeTimeout=%s&rejectReadOnly=%s",
 			v.Username,
 			v.Password,
 			v.Host,
@@ -41,10 +41,9 @@ func InitDataSource(c *config.YAMLConfig) {
 			v.ReadTimeout,
 			v.WriteTimeout,
 			v.RejectReadOnly,
-			v.CheckConnectionLiveness,
 		)
 
-		if db, err := gorm.Open(v.DriverName, url); db != nil && err != nil {
+		if db, err := gorm.Open(v.DriverName, url); db != nil && err == nil {
 
 			if globalConfig.Application.Profile == "dev" || globalConfig.Application.Profile == "test" {
 				db.LogMode(true)
@@ -62,7 +61,7 @@ func InitDataSource(c *config.YAMLConfig) {
 		}
 	}
 
-	log.Info("Loading data source configure success")
+	log.Info("Loading data source config success")
 }
 
 func GetDB(dbname string) *gorm.DB {
