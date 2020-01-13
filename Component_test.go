@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/component/test"
-	"github.com/xhminc/xhm-framework/xhm"
 	"testing"
 	"time"
 )
@@ -14,8 +13,6 @@ var (
 )
 
 func TestLogToFile(t *testing.T) {
-
-	xhm.Bootstrap()
 
 	r := gin.New()
 	r.Use(logger.RequestLogger())

@@ -18,11 +18,13 @@ var (
 	applicationProfile string
 )
 
-func Bootstrap() {
-	GetGlobalConfig()
+func init() {
+
+	flag.StringVar(&applicationProfile, "profile", "dev",
+		"Please enter application profile name for loading config.")
+	flag.Parse()
+
 	bootstrap()
-	database.InitDataSource(globalConfig)
-	log.Info("Bootstrap framework finished !!!")
 }
 
 func GetGlobalConfig() *config.YAMLConfig {
@@ -35,14 +37,12 @@ func GetGlobalConfig() *config.YAMLConfig {
 
 func bootstrap() {
 
-	flag.StringVar(&applicationProfile, "profile", "dev",
-		"Please enter application profile name for loading config.")
-	flag.Parse()
-
 	if applicationProfile != "dev" && applicationProfile != "test" &&
 		applicationProfile != "prev" && applicationProfile != "prod" {
 		panic(fmt.Errorf("profile incorrect, usage: dev | test | prev | prod"))
 	}
+
+	GetGlobalConfig()
 
 	loadYAMLConfig("application.yml")
 	loadYAMLConfig("application-" + applicationProfile + ".yml")
@@ -50,6 +50,9 @@ func bootstrap() {
 
 	log = logger.InitLogger(globalConfig)
 	log.Info("Loading yaml config finished, profiles: [application.yml, application-" + applicationProfile + ".yml]")
+
+	database.InitDataSource(globalConfig)
+	log.Info("Bootstrap framework finished !!!")
 }
 
 func loadYAMLConfig(filename string) {

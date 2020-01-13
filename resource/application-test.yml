@@ -4,8 +4,8 @@ website:
 
 logging:
   encoding: console
-  filename: asdf
-  filepath: .
+  filename: test
+  filepath: E:/Log
 
 db:
   xhminc:

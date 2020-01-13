@@ -4,7 +4,7 @@ website:
 
 logging:
   encoding: console
-  filename: asdf
+  filename: dev
   filepath: E:/Log
 
 db:

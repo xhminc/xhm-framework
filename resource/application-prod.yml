@@ -3,9 +3,9 @@ website:
   title: 测试标题
 
 logging:
-  encoding: console
-  filename: asdf
-  filepath: .
+  encoding: json
+  filename: prod
+  filepath: E:/Log
 
 db:
   xhminc:
