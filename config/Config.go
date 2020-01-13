@@ -42,3 +42,27 @@ type YAMLConfig struct {
 		ConnectionMaxLifetime time.Duration `yaml:"connectionMaxLifetime"`
 	}
 }
+
+var (
+	globalConfig *YAMLConfig
+)
+
+func GetGlobalConfig() *YAMLConfig {
+	if globalConfig != nil {
+		return globalConfig
+	}
+	globalConfig = &YAMLConfig{}
+	return globalConfig
+}
+
+func (config *YAMLConfig) IsDevelop() bool {
+	return !config.IsProduct()
+}
+
+func (config *YAMLConfig) IsProduct() bool {
+	if config.Application.Profile == "prev" || config.Application.Profile == "prod" {
+		return true
+	} else {
+		return false
+	}
+}

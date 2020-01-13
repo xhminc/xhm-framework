@@ -15,9 +15,9 @@ var (
 	globalConfig *config.YAMLConfig
 )
 
-func InitDataSource(c *config.YAMLConfig) {
+func InitDataSource() {
 
-	globalConfig = c
+	globalConfig = config.GetGlobalConfig()
 	log = logger.GetLogger()
 
 	if globalConfig.DB == nil || len(globalConfig.DB) == 0 {

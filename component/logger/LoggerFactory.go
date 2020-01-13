@@ -19,12 +19,12 @@ var (
 )
 
 func GetLogger() *zap.Logger {
-	return InitLogger(nil)
+	return InitLogger()
 }
 
-func InitLogger(c *config.YAMLConfig) *zap.Logger {
+func InitLogger() *zap.Logger {
 
-	globalConfig = c
+	globalConfig = config.GetGlobalConfig()
 
 	if log != nil {
 		return log
@@ -82,6 +82,9 @@ func InitLogger(c *config.YAMLConfig) *zap.Logger {
 			}),
 		)
 	}))
+
+	log.Info("Loading yaml config finished, profiles: [application.yml, application-" +
+		globalConfig.Application.Profile + ".yml]")
 
 	return log
 }

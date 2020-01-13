@@ -27,26 +27,6 @@ func init() {
 	bootstrap()
 }
 
-func GetGlobalConfig() *config.YAMLConfig {
-	if globalConfig != nil {
-		return globalConfig
-	}
-	globalConfig = &config.YAMLConfig{}
-	return globalConfig
-}
-
-func IsDevelop() bool {
-	return !IsProduct()
-}
-
-func IsProduct() bool {
-	if globalConfig.Application.Profile == "prev" || globalConfig.Application.Profile == "prod" {
-		return true
-	} else {
-		return false
-	}
-}
-
 func bootstrap() {
 
 	if applicationProfile != "dev" && applicationProfile != "test" &&
@@ -54,16 +34,15 @@ func bootstrap() {
 		panic(fmt.Errorf("profile incorrect, usage: dev | test | prev | prod"))
 	}
 
-	GetGlobalConfig()
+	globalConfig = config.GetGlobalConfig()
 
 	loadYAMLConfig("application.yml")
 	loadYAMLConfig("application-" + applicationProfile + ".yml")
 	globalConfig.Application.Profile = applicationProfile
 
-	log = logger.InitLogger(globalConfig)
-	log.Info("Loading yaml config finished, profiles: [application.yml, application-" + applicationProfile + ".yml]")
+	log = logger.InitLogger()
+	database.InitDataSource()
 
-	database.InitDataSource(globalConfig)
 	log.Info("Bootstrap framework finished !!!")
 }
 

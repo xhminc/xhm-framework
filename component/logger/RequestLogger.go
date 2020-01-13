@@ -2,7 +2,6 @@ package logger
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/xhminc/xhm-framework/xhm"
 	"go.uber.org/zap"
 	"net/http"
 	"time"
@@ -52,7 +51,7 @@ func RequestLogger() gin.HandlerFunc {
 
 func getRequestHeaders(c *gin.Context) http.Header {
 	var header http.Header
-	if xhm.IsProduct() {
+	if globalConfig.IsProduct() {
 		header = c.Request.Header
 	}
 	return header
