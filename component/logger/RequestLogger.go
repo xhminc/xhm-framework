@@ -2,7 +2,9 @@ package logger
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/xhminc/xhm-framework/xhm"
 	"go.uber.org/zap"
+	"net/http"
 	"time"
 )
 
@@ -43,7 +45,15 @@ func RequestLogger() gin.HandlerFunc {
 			zap.String("ip", clientIP),
 			zap.Any("params", c.Params),
 			zap.Any("query", c.Request.URL.Query()),
-			zap.Any("headers", c.Request.Header),
+			zap.Any("headers", getRequestHeaders(c)),
 		)
 	}
+}
+
+func getRequestHeaders(c *gin.Context) http.Header {
+	var header http.Header
+	if xhm.IsProduct() {
+		header = c.Request.Header
+	}
+	return header
 }

@@ -35,6 +35,18 @@ func GetGlobalConfig() *config.YAMLConfig {
 	return globalConfig
 }
 
+func IsDevelop() bool {
+	return !IsProduct()
+}
+
+func IsProduct() bool {
+	if globalConfig.Application.Profile == "prev" || globalConfig.Application.Profile == "prod" {
+		return true
+	} else {
+		return false
+	}
+}
+
 func bootstrap() {
 
 	if applicationProfile != "dev" && applicationProfile != "test" &&
