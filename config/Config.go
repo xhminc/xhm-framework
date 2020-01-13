@@ -10,6 +10,10 @@ type YAMLConfig struct {
 	Application struct {
 		Name    string `yaml:"name"`
 		Profile string
+		Port    int `yaml:"port"`
+		Cors    struct {
+			Hosts []string `yaml:"hosts"`
+		}
 	}
 
 	Logging struct {

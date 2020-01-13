@@ -13,38 +13,29 @@ func RequestLogger() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
-		// 开始时间
 		startTime := time.Now()
-
-		// 处理请求
-		c.Next()
-
-		// 结束时间
-		endTime := time.Now()
-
-		// 执行时间
-		latencyTime := endTime.Sub(startTime)
-
-		// 请求方式
 		reqMethod := c.Request.Method
-
-		// 请求路由
-		reqUri := c.Request.RequestURI
-
-		// 状态码
-		statusCode := c.Writer.Status()
-
-		// 请求IP
+		reqUri := c.FullPath()
 		clientIP := c.ClientIP()
 
 		log.Info(
-			reqMethod+" "+reqUri,
-			zap.Int("status", statusCode),
-			zap.Duration("cost", latencyTime),
+			reqMethod+" [request] "+reqUri,
 			zap.String("ip", clientIP),
 			zap.Any("params", c.Params),
 			zap.Any("query", c.Request.URL.Query()),
 			zap.Any("headers", getRequestHeaders(c)),
+		)
+
+		c.Next()
+
+		endTime := time.Now()
+		latencyTime := endTime.Sub(startTime)
+		statusCode := c.Writer.Status()
+
+		log.Info(
+			reqMethod+" [response] "+reqUri,
+			zap.Int("status", statusCode),
+			zap.Duration("cost", latencyTime),
 		)
 	}
 }
