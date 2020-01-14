@@ -21,7 +21,7 @@ func InitDataSource() {
 	log = logger.GetLogger()
 
 	if globalConfig.DB == nil || len(globalConfig.DB) == 0 {
-		panic(fmt.Errorf("data source config not exists"))
+		panic(fmt.Errorf("Data source config not exists\n"))
 	}
 
 	dbMap = map[string]*gorm.DB{}

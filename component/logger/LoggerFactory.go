@@ -39,7 +39,7 @@ func InitLogger() *zap.Logger {
 	} else if globalConfig.Logging.Encoding == "json" {
 		encoder = zapcore.NewJSONEncoder(encoderConfig)
 	} else {
-		panic(fmt.Errorf("logging.encoding incorrect, usage: console | json"))
+		panic(fmt.Errorf("Logging.encoding incorrect, usage: console | json\n"))
 	}
 
 	infoLevel := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
@@ -68,7 +68,7 @@ func InitLogger() *zap.Logger {
 
 	pathErr := os.MkdirAll(path, os.ModePerm)
 	if pathErr != nil {
-		panic(fmt.Errorf("create log folder fail, exception: %s", pathErr))
+		panic(fmt.Errorf("Create log folder fail, exception: %s\n", pathErr))
 	}
 
 	log, _ = cfg.Build(zap.WrapCore(func(oc zapcore.Core) zapcore.Core {
