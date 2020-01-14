@@ -4,13 +4,12 @@ import "time"
 
 type YAMLConfig struct {
 	Server struct {
-		Port string `yaml:"port"`
+		Addr string `yaml:"addr"`
 	}
 
 	Application struct {
 		Name    string `yaml:"name"`
 		Profile string
-		Port    int `yaml:"port"`
 		Cors    struct {
 			Hosts []string `yaml:"hosts"`
 		}

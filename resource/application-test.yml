@@ -1,5 +1,7 @@
+server:
+  addr: :40000
+
 application:
-  port: 40000
   cors:
     hosts:
       - tradercat-api.xhm-inc.com

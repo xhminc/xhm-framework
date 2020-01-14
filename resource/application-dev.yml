@@ -1,12 +1,14 @@
+server:
+  addr: :40000
+
 application:
-  port: 40000
   cors:
     hosts:
       - tradercat-api.xhm-inc.com
 
 website:
   host: http://www.abc.com
-  title: 测试标题
+  title: ${GOPATH}
 
 logging:
   encoding: console
