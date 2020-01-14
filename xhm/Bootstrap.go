@@ -3,18 +3,17 @@ package xhm
 import (
 	"flag"
 	"fmt"
+	"github.com/spf13/viper"
 	"github.com/xhminc/xhm-framework/component/database"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
 	"go.uber.org/zap"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"path/filepath"
 )
 
 var (
 	log                *zap.Logger
 	globalConfig       *config.YAMLConfig
+	v                  *viper.Viper
 	applicationProfile string
 )
 
@@ -36,6 +35,7 @@ func bootstrap() {
 
 	globalConfig = config.GetGlobalConfig()
 
+	initViper()
 	loadYAMLConfig("application.yml")
 	loadYAMLConfig("application-" + applicationProfile + ".yml")
 	globalConfig.Application.Profile = applicationProfile
@@ -46,24 +46,46 @@ func bootstrap() {
 	log.Info("Bootstrap framework finished !!!")
 }
 
+func initViper() {
+	v = viper.New()
+	v.AddConfigPath("./resource/")
+	v.SetConfigType("yaml")
+}
+
 func loadYAMLConfig(filename string) {
 
-	realPath, pathErr := filepath.Abs("resource/" + filename)
+	v.SetConfigName(filename)
 
-	if pathErr != nil {
-		panic(fmt.Errorf("generate absolute path fail, exception: %s", pathErr))
+	err := v.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("Loading config file fail, exception: %s \n", err))
 	}
 
-	content, ioErr := ioutil.ReadFile(realPath)
-
-	if ioErr != nil {
-		panic(fmt.Errorf("loading config file fail, exception: %s", ioErr))
-	}
-
-	e := yaml.Unmarshal(content, globalConfig)
-
-	if e != nil {
-		panic(fmt.Errorf("parsing yaml config fail, exception: %s", e))
+	err = v.Unmarshal(globalConfig)
+	if err != nil {
+		panic(fmt.Errorf("Extraing config file fail, exception: %s \n", err))
 	}
 
 }
+
+//func loadYAMLConfig(filename string) {
+//
+//	realPath, pathErr := filepath.Abs("resource/" + filename)
+//
+//	if pathErr != nil {
+//		panic(fmt.Errorf("generate absolute path fail, exception: %s", pathErr))
+//	}
+//
+//	content, ioErr := ioutil.ReadFile(realPath)
+//
+//	if ioErr != nil {
+//		panic(fmt.Errorf("loading config file fail, exception: %s", ioErr))
+//	}
+//
+//	e := yaml.Unmarshal(content, globalConfig)
+//
+//	if e != nil {
+//		panic(fmt.Errorf("parsing yaml config fail, exception: %s", e))
+//	}
+//
+//}
