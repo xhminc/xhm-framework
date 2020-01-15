@@ -4,17 +4,20 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
+	"go.uber.org/zap"
 	"net/http"
 	"strings"
 )
 
 var (
-	log          = logger.GetLogger()
-	globalConfig = config.GetGlobalConfig()
+	log          *zap.Logger
+	globalConfig *config.YAMLConfig
 )
 
 func CorsRequestHandler() gin.HandlerFunc {
 
+	log = logger.GetLogger()
+	globalConfig = config.GetGlobalConfig()
 	log.Info("Loading \"security.CorsRequestHandler\" component success")
 
 	return func(c *gin.Context) {
