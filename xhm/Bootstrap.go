@@ -15,11 +15,6 @@ import (
 	"regexp"
 )
 
-const (
-	DES_KEY = "XHM_3DES_KEY"
-	DES_IV  = "XHM_3DES_IV"
-)
-
 var (
 	log                *zap.Logger
 	globalConfig       *config.YAMLConfig
@@ -70,7 +65,7 @@ func loadYAMLConfig(filename string) {
 
 	err := v.ReadInConfig()
 	if err != nil {
-		panic(fmt.Errorf("Loading config file fail, exception: %s \n", err))
+		panic(fmt.Errorf("Loading config file fail, exception: %s\n", err))
 	}
 
 	err = v.Unmarshal(globalConfig, func(decoderConfig *mapstructure.DecoderConfig) {
@@ -83,7 +78,7 @@ func loadYAMLConfig(filename string) {
 	})
 
 	if err != nil {
-		panic(fmt.Errorf("Extraing config file fail, exception: %s \n", err))
+		panic(fmt.Errorf("Extraing config file fail, exception: %s\n", err))
 	}
 
 }
@@ -114,9 +109,9 @@ func tripleDESHookFunc() mapstructure.DecodeHookFunc {
 		d := data.(string)
 		env := tripleDESRegex.ReplaceAllStringFunc(d, func(s string) string {
 
-			key := os.Getenv(DES_KEY)
-			iv := os.Getenv(DES_IV)
-			decryptString, err := tripledes.DecryptToString(d, key, []byte(iv)...)
+			key := os.Getenv(config.DES_KEY)
+			iv := os.Getenv(config.DES_IV)
+			decryptString, err := tripledes.DecryptToString(d[4:len(d)-1], key, []byte(iv)...)
 
 			if err != nil {
 				panic(fmt.Errorf("3DES decrypt ENC() config fail, exception: %s\n", err))

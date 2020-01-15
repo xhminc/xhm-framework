@@ -5,13 +5,23 @@ import (
 	"crypto/des"
 	"encoding/hex"
 	"errors"
+	"github.com/xhminc/xhm-framework/config"
 	"log"
+	"os"
 	"runtime"
 )
 
 const (
 	ivdes = "xhminc20"
 )
+
+func EncryptToStringWithEnv(text string) string {
+	str, err := EncryptToString(text, os.Getenv(config.DES_KEY), []byte(os.Getenv(config.DES_IV))...)
+	if err != nil {
+		panic(err)
+	}
+	return str
+}
 
 func EncryptToString(text string, key string, iv ...byte) (string, error) {
 	encrypt, err := Encrypt([]byte(text), []byte(key), iv...)

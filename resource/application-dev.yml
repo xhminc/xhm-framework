@@ -20,7 +20,7 @@ db:
     driverName: mysql
     host: localhost
     port: 3306
-    username: root
+    username: ENC(9cfab5b8abbef0cc)
     password: 123456
     dbname: xhminc
     charset: utf8mb4
