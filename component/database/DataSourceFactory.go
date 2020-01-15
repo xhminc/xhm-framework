@@ -67,3 +67,12 @@ func InitDataSource() {
 func GetDB(dbname string) *gorm.DB {
 	return dbMap[dbname]
 }
+
+func CloseDB() {
+	for _, v := range dbMap {
+		err := v.Close()
+		if err != nil {
+			log.Error(err.Error())
+		}
+	}
+}
