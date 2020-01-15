@@ -7,7 +7,6 @@ import (
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
 	"go.uber.org/zap"
-	t "time"
 )
 
 var (
@@ -86,15 +85,5 @@ type MyLogger struct {
 }
 
 func (logger *MyLogger) Print(values ...interface{}) {
-	var (
-		level  = values[0]
-		source = values[1]
-	)
-	if level == "sql" {
-		sql := values[3].(string)
-		cost := values[2].(t.Duration)
-		log.Info(sql, zap.Any("level", level), zap.Any("source", source), zap.Duration("cost", cost))
-	} else {
-		log.Info("", zap.Any("values", values))
-	}
+	log.Info("gorm", zap.Any("v", values))
 }
