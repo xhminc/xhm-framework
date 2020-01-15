@@ -17,6 +17,7 @@ var (
 
 func InitDataSource() {
 
+	var myLogger MyLogger
 	globalConfig = config.GetGlobalConfig()
 	log = logger.GetLogger()
 
@@ -45,6 +46,7 @@ func InitDataSource() {
 
 		if db, err := gorm.Open(v.DriverName, url); db != nil && err == nil {
 
+			db.SetLogger(&myLogger)
 			if globalConfig.Application.Profile == "dev" || globalConfig.Application.Profile == "test" {
 				db.LogMode(true)
 			} else {
@@ -76,5 +78,21 @@ func CloseDB() {
 		} else {
 			log.Info("Closing db success", zap.String("name", k))
 		}
+	}
+}
+
+type MyLogger struct {
+}
+
+func (logger *MyLogger) Print(values ...interface{}) {
+	var (
+		level  = values[0]
+		source = values[1]
+	)
+	if level == "sql" {
+		sql := values[3].(string)
+		log.Info(sql, zap.Any("level", level), zap.Any("source", source))
+	} else {
+		log.Info("", zap.Any("values", values))
 	}
 }
