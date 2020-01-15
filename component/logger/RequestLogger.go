@@ -19,7 +19,7 @@ func RequestLogger() gin.HandlerFunc {
 		clientIP := c.ClientIP()
 
 		log.Info(
-			reqMethod+" [request] "+reqUri,
+			"[request] "+reqMethod+" "+reqUri,
 			zap.String("ip", clientIP),
 			zap.Any("params", c.Params),
 			zap.Any("query", c.Request.URL.Query()),
@@ -33,7 +33,7 @@ func RequestLogger() gin.HandlerFunc {
 		statusCode := c.Writer.Status()
 
 		log.Info(
-			reqMethod+" [response] "+reqUri,
+			"[response] "+reqMethod+" "+reqUri,
 			zap.Int("status", statusCode),
 			zap.Duration("cost", latencyTime),
 		)
