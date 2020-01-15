@@ -101,8 +101,12 @@ func (logger *MyLogger) Print(values ...interface{}) {
 			zap.Duration("cost", cost),
 			zap.Any("params", params))
 	} else if level == "log" {
-		log.Error("", zap.Any("level", level), zap.Any("message", values[2]))
+		log.Error(
+			"",
+			zap.Any("level", level),
+			zap.Any("source", source),
+			zap.Any("message", values[2]))
 	} else {
-		log.Info("", zap.Any("level", level), zap.Any("values", values))
+		log.Info("", zap.Any("values", values))
 	}
 }
