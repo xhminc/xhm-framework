@@ -69,10 +69,12 @@ func GetDB(dbname string) *gorm.DB {
 }
 
 func CloseDB() {
-	for _, v := range dbMap {
+	for k, v := range dbMap {
 		err := v.Close()
 		if err != nil {
 			log.Error(err.Error())
+		} else {
+			log.Info("Closing db success", zap.String("name", k))
 		}
 	}
 }
