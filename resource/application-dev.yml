@@ -8,7 +8,7 @@ application:
 
 website:
   host: http://www.abc.com
-  title: ${GOPATH}
+  title: 测试标题
 
 logging:
   encoding: console

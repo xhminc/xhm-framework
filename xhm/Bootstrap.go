@@ -3,11 +3,21 @@ package xhm
 import (
 	"flag"
 	"fmt"
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 	"github.com/xhminc/xhm-framework/component/database"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
+	"github.com/xhminc/xhm-framework/util/tripledes"
 	"go.uber.org/zap"
+	"os"
+	"reflect"
+	"regexp"
+)
+
+const (
+	DES_KEY = "XHM_3DES_KEY"
+	DES_IV  = "XHM_3DES_IV"
 )
 
 var (
@@ -15,6 +25,8 @@ var (
 	globalConfig       *config.YAMLConfig
 	v                  *viper.Viper
 	applicationProfile string
+	systemEnvRegex, _  = regexp.Compile("\\$\\{([^\\$\\{\\}]+)\\}")
+	tripleDESRegex, _  = regexp.Compile("^ENC\\(.*\\)$")
 )
 
 func init() {
@@ -61,11 +73,60 @@ func loadYAMLConfig(filename string) {
 		panic(fmt.Errorf("Loading config file fail, exception: %s \n", err))
 	}
 
-	err = v.Unmarshal(globalConfig)
+	err = v.Unmarshal(globalConfig, func(decoderConfig *mapstructure.DecoderConfig) {
+		decoderConfig.DecodeHook = mapstructure.ComposeDecodeHookFunc(
+			mapstructure.StringToTimeDurationHookFunc(),
+			mapstructure.StringToSliceHookFunc(","),
+			systemEnvHookFunc(),
+			tripleDESHookFunc(),
+		)
+	})
+
 	if err != nil {
 		panic(fmt.Errorf("Extraing config file fail, exception: %s \n", err))
 	}
 
+}
+
+func systemEnvHookFunc() mapstructure.DecodeHookFunc {
+	return func(f reflect.Kind, t reflect.Kind, data interface{}) (interface{}, error) {
+
+		if f != reflect.String {
+			return data, nil
+		}
+
+		d := data.(string)
+		env := systemEnvRegex.ReplaceAllStringFunc(d, func(s string) string {
+			return os.Getenv(s[2 : len(s)-1])
+		})
+
+		return env, nil
+	}
+}
+
+func tripleDESHookFunc() mapstructure.DecodeHookFunc {
+	return func(f reflect.Kind, t reflect.Kind, data interface{}) (interface{}, error) {
+
+		if f != reflect.String {
+			return data, nil
+		}
+
+		d := data.(string)
+		env := tripleDESRegex.ReplaceAllStringFunc(d, func(s string) string {
+
+			key := os.Getenv(DES_KEY)
+			iv := os.Getenv(DES_IV)
+			decryptString, err := tripledes.DecryptToString(d, key, []byte(iv)...)
+
+			if err != nil {
+				panic(fmt.Errorf("3DES decrypt ENC() config fail, exception: %s\n", err))
+			}
+
+			return decryptString
+		})
+
+		return env, nil
+	}
 }
 
 //func loadYAMLConfig(filename string) {
