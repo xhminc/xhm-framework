@@ -52,7 +52,7 @@ func CorsRequestHandler() gin.HandlerFunc {
 
 		if globalConfig.Application.Cors.AccessControlMaxAge != nil {
 			c.Header("Access-Control-Max-Age",
-				strconv.FormatFloat(globalConfig.Application.Cors.AccessControlMaxAge.Seconds(), 'E', -1, 64))
+				strconv.FormatUint(uint64(globalConfig.Application.Cors.AccessControlMaxAge.Seconds()), 10))
 		}
 
 		if method == "OPTIONS" {
