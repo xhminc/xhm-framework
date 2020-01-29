@@ -12,11 +12,11 @@ type YAMLConfig struct {
 		Profile string
 		Cors    struct {
 			AccessControlAllowOrigin      []string       `yaml:"accessControlAllowOrigin"`
-			AccessControlAllowMethods     []string       `yaml:"access-control-allow-methods"`
-			AccessControlAllowHeaders     []string       `yaml:"access-control-allow-headers"`
-			AccessControlExposeHeaders    []string       `yaml:"access-control-expose-headers"`
-			AccessControlAllowCredentials *bool          `yaml:"access-control-allow-credentials"`
-			AccessControlMaxAge           *time.Duration `yaml:"access-control-max-age"`
+			AccessControlAllowMethods     []string       `yaml:"accessControlAllowMethods"`
+			AccessControlAllowHeaders     []string       `yaml:"accessControlAllowHeaders"`
+			AccessControlExposeHeaders    []string       `yaml:"accessControlExposeHeaders"`
+			AccessControlAllowCredentials *bool          `yaml:"accessControlAllowCredentials"`
+			AccessControlMaxAge           *time.Duration `yaml:"accessControlMaxAge"`
 		}
 	}
 
