@@ -23,14 +23,34 @@ func CorsRequestHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		method := c.Request.Method
-		c.Header("Access-Control-Allow-Origin", strings.Join(globalConfig.Application.Cors.Hosts, ","))
-		c.Header("Access-Control-Max-Age", "3600")
-		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
-		c.Header("Access-Control-Allow-Credentials", "true")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization, Token")
-		c.Header("Access-Control-Expose-Headers",
-			"Content-Type, Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers")
-		c.Header("Content-Type", "application/json")
+
+		if len(globalConfig.Application.Cors.AccessControlAllowOrigin) > 0 {
+			c.Header("Access-Control-Allow-Origin",
+				strings.Join(globalConfig.Application.Cors.AccessControlAllowOrigin, ","))
+		}
+
+		if len(globalConfig.Application.Cors.AccessControlAllowMethods) > 0 {
+			c.Header("Access-Control-Allow-Methods",
+				strings.Join(globalConfig.Application.Cors.AccessControlAllowMethods, ","))
+		}
+
+		if len(globalConfig.Application.Cors.AccessControlAllowHeaders) > 0 {
+			c.Header("Access-Control-Allow-Headers",
+				strings.Join(globalConfig.Application.Cors.AccessControlAllowHeaders, ","))
+		}
+
+		if len(globalConfig.Application.Cors.AccessControlExposeHeaders) > 0 {
+			c.Header("Access-Control-Expose-Headers",
+				strings.Join(globalConfig.Application.Cors.AccessControlExposeHeaders, ","))
+		}
+
+		if globalConfig.Application.Cors.AccessControlAllowCredentials != nil {
+			c.Header("Access-Control-Allow-Credentials", "true")
+		}
+
+		if globalConfig.Application.Cors.AccessControlMaxAge != nil {
+			c.Header("Access-Control-Max-Age", "3600")
+		}
 
 		if method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
