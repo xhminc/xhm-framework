@@ -6,6 +6,7 @@ import (
 	"github.com/xhminc/xhm-framework/config"
 	"go.uber.org/zap"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -45,11 +46,13 @@ func CorsRequestHandler() gin.HandlerFunc {
 		}
 
 		if globalConfig.Application.Cors.AccessControlAllowCredentials != nil {
-			c.Header("Access-Control-Allow-Credentials", "true")
+			c.Header("Access-Control-Allow-Credentials",
+				strconv.FormatBool(*globalConfig.Application.Cors.AccessControlAllowCredentials))
 		}
 
 		if globalConfig.Application.Cors.AccessControlMaxAge != nil {
-			c.Header("Access-Control-Max-Age", "3600")
+			c.Header("Access-Control-Max-Age",
+				strconv.FormatFloat(globalConfig.Application.Cors.AccessControlMaxAge.Seconds(), 'E', -1, 64))
 		}
 
 		if method == "OPTIONS" {
