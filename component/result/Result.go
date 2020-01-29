@@ -6,7 +6,7 @@ type Result struct {
 	HttpStatus int         `json:"-"`
 	Code       int         `json:"code"`
 	Message    string      `json:"message"`
-	Data       interface{} `json:"data"`
+	Data       interface{} `json:"data,omitempty"`
 }
 
 func Ok(data interface{}) Result {
