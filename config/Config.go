@@ -11,7 +11,7 @@ type YAMLConfig struct {
 		Name    string `yaml:"name"`
 		Profile string
 		Cors    struct {
-			AccessControlAllowOrigin      []string       `yaml:"access-control-allow-origin"`
+			AccessControlAllowOrigin      []string       `yaml:"accessControlAllowOrigin"`
 			AccessControlAllowMethods     []string       `yaml:"access-control-allow-methods"`
 			AccessControlAllowHeaders     []string       `yaml:"access-control-allow-headers"`
 			AccessControlExposeHeaders    []string       `yaml:"access-control-expose-headers"`
