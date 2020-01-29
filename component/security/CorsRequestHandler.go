@@ -5,6 +5,7 @@ import (
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
 	"go.uber.org/zap"
+	"net/http"
 	"strings"
 )
 
@@ -21,7 +22,7 @@ func CorsRequestHandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
-		//method := c.Request.Method
+		method := c.Request.Method
 		c.Header("Access-Control-Allow-Origin", strings.Join(globalConfig.Application.Cors.Hosts, ","))
 		c.Header("Access-Control-Max-Age", "3600")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
@@ -31,10 +32,11 @@ func CorsRequestHandler() gin.HandlerFunc {
 			"Content-Type, Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers")
 		c.Header("Content-Type", "application/json")
 
-		//if method == "OPTIONS" {
-		//	c.AbortWithStatus(http.StatusNoContent)
-		//}
+		if method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+		} else {
+			c.Next()
+		}
 
-		c.Next()
 	}
 }
