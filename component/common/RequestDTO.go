@@ -1,7 +1,6 @@
 package common
 
 import (
-	"github.com/xhminc/xhm-framework/component/result"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
 )
@@ -9,7 +8,7 @@ import (
 type RequestDTO struct {
 }
 
-func (r *RequestDTO) GetError(err validator.ValidationErrors) result.Result {
+func (r *RequestDTO) GetError(err validator.ValidationErrors) Result {
 
 	var message string
 	if len(err) > 0 {
@@ -18,7 +17,7 @@ func (r *RequestDTO) GetError(err validator.ValidationErrors) result.Result {
 		message = "request parameters error"
 	}
 
-	return result.Result{
+	return Result{
 		HttpStatus: http.StatusOK,
 		Code:       -1,
 		Message:    message,
