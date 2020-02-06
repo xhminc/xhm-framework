@@ -37,8 +37,8 @@ func (t *tag) getTagIdSegment() error {
 
 		tx := db.Begin()
 
-		updateRet := tx.Table(tableName).Where("biz_tag = ?", t.name).
-			Update("max_id = max_id + step").RowsAffected
+		updateRet := tx.Exec("update "+tableName+
+			" set max_id = max_id + step where biz_id = ?", t.name).RowsAffected
 
 		if updateRet == 0 {
 			tx.Rollback()
