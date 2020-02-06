@@ -24,6 +24,11 @@ func InitGenerator(tags []string, database *gorm.DB) {
 
 func (g *IdGenerator) initTags(tags []string) {
 	for _, t := range tags {
+
+		if g.tags[t] != nil {
+			continue
+		}
+
 		realTag := tag{}
 		err := realTag.InitTag(t)
 		if err != nil {
