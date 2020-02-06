@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"go.uber.org/zap"
@@ -26,11 +27,15 @@ func (g *IdGenerator) initTags(tags []string) {
 		if err != nil {
 			log.Error("Init biz tag fail", zap.String("error", err.Error()))
 		} else {
+			g.tags[t] = &realTag
 			log.Info("Init biz tag success", zap.String("tag", t))
 		}
 	}
 }
 
 func (g *IdGenerator) NextId(tag string) (int64, error) {
+	if g.tags[tag] == nil {
+		return -1, fmt.Errorf("IdGenerator must be init")
+	}
 	return g.tags[tag].nextId()
 }
