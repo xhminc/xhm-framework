@@ -14,12 +14,19 @@ type IdGenerator struct {
 }
 
 func InitGenerator(tags []string, database *gorm.DB) {
+
+	if inited {
+		return
+	}
+
 	db = database
 	log = logger.GetLogger()
 	Generator = &IdGenerator{
 		tags: make(map[string]*tag),
 	}
+
 	Generator.initTags(tags)
+	inited = true
 }
 
 func (g *IdGenerator) initTags(tags []string) {

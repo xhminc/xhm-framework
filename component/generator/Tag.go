@@ -24,6 +24,9 @@ func (t *tag) InitTag(tag string) error {
 		return fmt.Errorf("Tag not exists, tag name: %s\n", t.name)
 	}
 
+	t.lock.Lock()
+	defer t.lock.Unlock()
+
 	err := t.getTagIdSegment()
 	if err != nil {
 		return err

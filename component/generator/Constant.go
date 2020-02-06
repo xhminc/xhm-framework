@@ -10,4 +10,5 @@ var (
 	log       *zap.Logger
 	tableName = "xhm_segment"
 	Generator *IdGenerator
+	inited    = false
 )
