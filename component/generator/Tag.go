@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"go.uber.org/zap"
 	"sync"
 )
 
@@ -57,6 +58,8 @@ func (t *tag) getTagIdSegment() error {
 		t.begin = t.end - int64(*s.Step)
 
 		tx.Commit()
+
+		log.Info("Get tag segment success", zap.String("tag", t.name))
 	}
 
 	return nil
