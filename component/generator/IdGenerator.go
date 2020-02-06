@@ -16,7 +16,9 @@ type IdGenerator struct {
 func InitGenerator(tags []string, database *gorm.DB) {
 	db = database
 	log = logger.GetLogger()
-	Generator = &IdGenerator{}
+	Generator = &IdGenerator{
+		tags: make(map[string]*tag),
+	}
 	Generator.initTags(tags)
 }
 
