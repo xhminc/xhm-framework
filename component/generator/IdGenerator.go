@@ -2,6 +2,7 @@ package generator
 
 import (
 	"github.com/jinzhu/gorm"
+	"github.com/xhminc/xhm-framework/component/logger"
 	"go.uber.org/zap"
 	"sync"
 )
@@ -13,6 +14,7 @@ type IdGenerator struct {
 
 func InitGenerator(tags []string, database *gorm.DB) {
 	db = database
+	log = logger.GetLogger()
 	Generator = &IdGenerator{}
 	Generator.initTags(tags)
 }

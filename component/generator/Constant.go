@@ -2,12 +2,12 @@ package generator
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/xhminc/xhm-framework/component/logger"
+	"go.uber.org/zap"
 )
 
 var (
 	db        *gorm.DB
-	log       = logger.GetLogger()
+	log       *zap.Logger
 	tableName = "xhm_segment"
 	Generator *IdGenerator
 )
