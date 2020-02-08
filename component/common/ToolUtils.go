@@ -17,6 +17,10 @@ const (
 	RAND_ALL   = 3
 )
 
+func Password(username string, password string, salt string) string {
+	return SHA512(SHA1(password) + MD5(salt) + username)
+}
+
 func MD5(text string) string {
 	return fmt.Sprintf("%x", md5.Sum([]byte(text)))
 }
