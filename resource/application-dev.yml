@@ -2,6 +2,17 @@ server:
   addr: :40000
 
 application:
+  session:
+    jwt:
+      timeout: 8h
+      method: ES256
+    cookie:
+      enable: true
+      name: sessionid
+      path: /
+      timeout: 10h
+      domain: tradercat.xhm-inc.com
+      httpOnly: true
   cors:
     hosts:
       - tradercat-api.xhm-inc.com

@@ -10,7 +10,21 @@ type YAMLConfig struct {
 	Application struct {
 		Name    string `yaml:"name"`
 		Profile string
-		Cors    struct {
+		Session struct {
+			Jwt struct {
+				Timeout time.Time `yaml:"timeout"`
+				Method  string    `yaml:"method"`
+			}
+			Cookie struct {
+				Enable   bool      `yaml:"enable"`
+				Name     string    `yaml:"name"`
+				Timeout  time.Time `yaml:"timeout"`
+				Path     string    `yaml:"path"`
+				Domain   string    `yaml:"domain"`
+				HttpOnly bool      `yaml:"httpOnly"`
+			}
+		}
+		Cors struct {
 			AccessControlAllowOrigin      []string       `yaml:"accessControlAllowOrigin"`
 			AccessControlAllowMethods     []string       `yaml:"accessControlAllowMethods"`
 			AccessControlAllowHeaders     []string       `yaml:"accessControlAllowHeaders"`
