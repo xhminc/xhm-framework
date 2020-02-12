@@ -4,16 +4,46 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/xhminc/xhm-framework/config"
 	"strings"
+	"time"
 )
 
-func BuildJwt(payload interface{}) *jwt.Token {
+type cookie struct {
+	Name     string `json:"name"`
+	Timeout  int64  `json:"timeout"`
+	Path     string `json:"path"`
+	Domain   string `json:"domain"`
+	HttpOnly bool   `json:"httpOnly"`
+}
+
+func BuildJwt(key string, payload interface{}) (string, error) {
+
 	var method jwt.SigningMethod
 	globalConfig = config.GetGlobalConfig()
 	method = getSignMethod(globalConfig.Application.Session.Jwt.Method)
-	return jwt.NewWithClaims(method, jwt.MapClaims{
-		"exp":     globalConfig.Application.Session.Jwt.Timeout.Unix(),
+
+	mapClaims := jwt.MapClaims{
+		"exp":     time.Now().Add(*globalConfig.Application.Session.Jwt.Timeout).Unix(),
 		"payload": payload,
-	})
+	}
+
+	if globalConfig.Application.Session.Cookie.Enable {
+		mapClaims["cookie"] = cookie{
+			Name:     globalConfig.Application.Session.Cookie.Name,
+			Timeout:  int64(globalConfig.Application.Session.Cookie.Timeout.Seconds()),
+			Path:     globalConfig.Application.Session.Cookie.Path,
+			Domain:   globalConfig.Application.Session.Cookie.Domain,
+			HttpOnly: globalConfig.Application.Session.Cookie.HttpOnly,
+		}
+	}
+
+	token := jwt.NewWithClaims(method, mapClaims)
+	tokenString, err := token.SignedString([]byte(key))
+
+	if err != nil {
+		return "", err
+	} else {
+		return tokenString, nil
+	}
 }
 
 func getSignMethod(method string) jwt.SigningMethod {

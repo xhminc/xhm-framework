@@ -4,18 +4,15 @@ server:
 application:
   session:
     jwt:
-      timeout: 8h
-      method: ES256
+      timeout: 10s
+      method: HS256
     cookie:
-      enable: true
+      enable: false
       name: sessionid
       path: /
       timeout: 10h
       domain: tradercat.xhm-inc.com
       httpOnly: true
-  cors:
-    hosts:
-      - tradercat-api.xhm-inc.com
 
 website:
   host: http://www.abc.com
@@ -24,7 +21,7 @@ website:
 logging:
   encoding: console
   filename: dev
-  filepath: E:/Log
+  filepath: d:/Log
 
 db:
   xhminc:

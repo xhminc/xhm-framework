@@ -12,16 +12,16 @@ type YAMLConfig struct {
 		Profile string
 		Session struct {
 			Jwt struct {
-				Timeout time.Time `yaml:"timeout"`
-				Method  string    `yaml:"method"`
+				Timeout *time.Duration `yaml:"timeout"`
+				Method  string         `yaml:"method"`
 			}
 			Cookie struct {
-				Enable   bool      `yaml:"enable"`
-				Name     string    `yaml:"name"`
-				Timeout  time.Time `yaml:"timeout"`
-				Path     string    `yaml:"path"`
-				Domain   string    `yaml:"domain"`
-				HttpOnly bool      `yaml:"httpOnly"`
+				Enable   bool           `yaml:"enable"`
+				Name     string         `yaml:"name"`
+				Timeout  *time.Duration `yaml:"timeout"`
+				Path     string         `yaml:"path"`
+				Domain   string         `yaml:"domain"`
+				HttpOnly bool           `yaml:"httpOnly"`
 			}
 		}
 		Cors struct {
