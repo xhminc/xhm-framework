@@ -29,7 +29,7 @@ func SessionHandler() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 
-		requestUri := c.Request.RequestURI
+		requestUri := c.FullPath()
 		for _, url := range globalConfig.Application.Session.IgnoreUrls {
 			if requestUri == url {
 				c.Next()
