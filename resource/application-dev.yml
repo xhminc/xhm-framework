@@ -2,17 +2,10 @@ server:
   addr: :40000
 
 application:
-  session:
-    jwt:
-      timeout: 10s
-      method: HS256
-    cookie:
-      enable: false
-      name: sessionid
-      path: /
-      timeout: 10h
-      domain: tradercat.xhm-inc.com
-      httpOnly: true
+  jwt:
+    timeout: 10s
+    method: HS256
+    key: Vu133Atw9522MX5SWxuQtebe
 
 website:
   host: http://www.abc.com
@@ -21,7 +14,7 @@ website:
 logging:
   encoding: console
   filename: dev
-  filepath: d:/Log
+  filepath: E:/Log
 
 db:
   xhminc:

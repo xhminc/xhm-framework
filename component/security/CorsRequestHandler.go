@@ -4,15 +4,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
-	"go.uber.org/zap"
 	"net/http"
 	"strconv"
 	"strings"
-)
-
-var (
-	log          *zap.Logger
-	globalConfig *config.YAMLConfig
 )
 
 func CorsRequestHandler() gin.HandlerFunc {

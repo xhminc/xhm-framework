@@ -10,9 +10,13 @@ type YAMLConfig struct {
 	Application struct {
 		Name    string `yaml:"name"`
 		Profile string
-		Jwt     struct {
+		Session struct {
+			IgnoreUrls []string `yaml:"ignoreUrls"`
+		}
+		Jwt struct {
 			Timeout *time.Duration `yaml:"timeout"`
 			Method  string         `yaml:"method"`
+			Key     string         `yaml:"key"`
 		}
 		Cors struct {
 			AccessControlAllowOrigin      []string       `yaml:"accessControlAllowOrigin"`

@@ -11,7 +11,7 @@ func BuildJwt(key interface{}, claims jwt.MapClaims) (string, error) {
 
 	var method jwt.SigningMethod
 	globalConfig = config.GetGlobalConfig()
-	method = getSignMethod(globalConfig.Application.Jwt.Method)
+	method = GetSignMethod(globalConfig.Application.Jwt.Method)
 	claims["exp"] = time.Now().Add(*globalConfig.Application.Jwt.Timeout).Unix()
 
 	token := jwt.NewWithClaims(method, claims)
@@ -24,7 +24,7 @@ func BuildJwt(key interface{}, claims jwt.MapClaims) (string, error) {
 	}
 }
 
-func getSignMethod(method string) jwt.SigningMethod {
+func GetSignMethod(method string) jwt.SigningMethod {
 
 	var signingMethod jwt.SigningMethod
 
