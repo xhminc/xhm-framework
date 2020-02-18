@@ -1,11 +1,51 @@
 package auth
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/xhminc/xhm-framework/config"
+	"github.com/xhminc/xhm-framework/util/tripledes"
 	"strings"
 	"time"
 )
+
+func IsTokenValid(tokenString string) bool {
+	_, err := ParseJwt(tokenString, nil, nil)
+	return err == nil
+}
+
+func ParseJwt(tokenString string, salt interface{}, target interface{}) (interface{}, error) {
+
+	claims, err := parseJwt(tokenString)
+	if err != nil {
+		return nil, err
+	}
+
+	if salt == nil {
+		return claims, nil
+	}
+
+	info := (*claims)["info"]
+	decryptString, err := tripledes.DecryptToString(info.(string), salt.(string))
+
+	if err != nil {
+		return nil, err
+	}
+
+	if (strings.HasPrefix(decryptString, "{") && strings.HasSuffix(decryptString, "}")) ||
+		(strings.HasPrefix(decryptString, "[") && strings.HasSuffix(decryptString, "]")) {
+		jsonErr := json.Unmarshal([]byte(decryptString), &target)
+		if jsonErr != nil {
+			return nil, err
+		}
+		(*claims)["info"] = target
+	} else {
+		(*claims)["info"] = decryptString
+	}
+
+	return claims, nil
+}
 
 func BuildJwt(key interface{}, claims jwt.MapClaims) (string, error) {
 
@@ -59,4 +99,26 @@ func GetSignMethod(method string) jwt.SigningMethod {
 	}
 
 	return signingMethod
+}
+
+func parseJwt(tokenString string) (*jwt.MapClaims, error) {
+
+	globalConfig = config.GetGlobalConfig()
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(globalConfig.Application.Jwt.Key), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		claims := token.Claims.(jwt.MapClaims)
+		return &claims, nil
+	} else {
+		return nil, fmt.Errorf("Token invalid")
+	}
 }
