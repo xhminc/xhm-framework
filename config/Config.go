@@ -17,6 +17,7 @@ type YAMLConfig struct {
 			Timeout *time.Duration `yaml:"timeout"`
 			Method  string         `yaml:"method"`
 			Key     string         `yaml:"key"`
+			DataKey string         `yaml:"dataKey"`
 		}
 		Cors struct {
 			AccessControlAllowOrigin      []string       `yaml:"accessControlAllowOrigin"`
