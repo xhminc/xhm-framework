@@ -36,8 +36,9 @@ type YAMLConfig struct {
 	}
 
 	Website struct {
-		Host  string `yaml:"host"`
-		Title string `yaml:"title"`
+		Host  string                 `yaml:"host"`
+		Title string                 `yaml:"title"`
+		Props map[string]interface{} `yaml:"props"`
 	}
 
 	DB map[string]struct {
