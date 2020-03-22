@@ -6,8 +6,8 @@ import (
 )
 
 func Email(fieldLevel validator.FieldLevel) bool {
-	if username, ok := fieldLevel.Field().Interface().(string); ok {
-		return config.Email.MatchString(username)
+	if email, ok := fieldLevel.Field().Interface().(string); ok {
+		return config.Email.MatchString(email)
 	}
 	return false
 }

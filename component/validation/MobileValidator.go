@@ -6,8 +6,8 @@ import (
 )
 
 func Mobile(fieldLevel validator.FieldLevel) bool {
-	if username, ok := fieldLevel.Field().Interface().(string); ok {
-		return config.Mobile.MatchString(username)
+	if mobile, ok := fieldLevel.Field().Interface().(string); ok {
+		return config.Mobile.MatchString(mobile)
 	}
 	return false
 }
