@@ -16,7 +16,7 @@ const (
 var (
 	sessionTimeout = common.Result{
 		Code:    90000,
-		Message: "global.session.timeout",
+		Message: "common.sessionTimeout",
 	}
 )
 
