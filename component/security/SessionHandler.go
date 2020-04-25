@@ -3,6 +3,7 @@ package security
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/xhminc/xhm-framework/component/auth"
+	"github.com/xhminc/xhm-framework/component/base"
 	"github.com/xhminc/xhm-framework/component/common"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
@@ -14,7 +15,7 @@ const (
 )
 
 var (
-	sessionTimeout = common.Result{
+	sessionTimeout = base.Result{
 		Code:    90000,
 		Message: "common.sessionTimeout",
 	}

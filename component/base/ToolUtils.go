@@ -1,4 +1,4 @@
-package common
+package base
 
 import (
 	"crypto/md5"
