@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/xhminc/xhm-framework/component/auth"
 	"github.com/xhminc/xhm-framework/component/base"
-	"github.com/xhminc/xhm-framework/component/common"
 	"github.com/xhminc/xhm-framework/component/logger"
 	"github.com/xhminc/xhm-framework/config"
 	"net/http"
