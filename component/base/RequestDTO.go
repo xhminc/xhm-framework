@@ -6,8 +6,8 @@ import (
 )
 
 type RequestDTO struct {
-	pageNo   int `json:"pageNo"`
-	pageSize int `json:"pageSize"`
+	pageNo   int `json:"pageNo,omitempty"`
+	pageSize int `json:"pageSize,omitempty"`
 }
 
 func (r *RequestDTO) GetPageNo() int {
