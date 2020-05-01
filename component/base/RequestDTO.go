@@ -6,23 +6,23 @@ import (
 )
 
 type RequestDTO struct {
-	pageNo   int `json:"pageNo,omitempty"`
-	pageSize int `json:"pageSize,omitempty"`
+	PageNo   int `json:"pageNo,omitempty"`
+	PageSize int `json:"pageSize,omitempty"`
 }
 
 func (r *RequestDTO) GetPageNo() int {
-	if r.pageNo <= 0 {
+	if r.PageNo <= 0 {
 		return 1
 	} else {
-		return r.pageNo
+		return r.PageNo
 	}
 }
 
 func (r *RequestDTO) GetPageSize() int {
-	if r.pageSize <= 0 {
+	if r.PageSize <= 0 {
 		return 50
 	} else {
-		return r.pageSize
+		return r.PageSize
 	}
 }
 
