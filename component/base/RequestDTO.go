@@ -6,6 +6,24 @@ import (
 )
 
 type RequestDTO struct {
+	pageNo   int `json:"pageNo"`
+	pageSize int `json:"pageSize"`
+}
+
+func (r *RequestDTO) GetPageNo() int {
+	if r.pageNo <= 0 {
+		return 1
+	} else {
+		return r.pageNo
+	}
+}
+
+func (r *RequestDTO) GetPageSize() int {
+	if r.pageSize <= 0 {
+		return 50
+	} else {
+		return r.pageSize
+	}
 }
 
 func (r *RequestDTO) GetError(err validator.ValidationErrors) Result {
